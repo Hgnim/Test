@@ -1,4 +1,4 @@
-name: Parse and Save HTML
+name: Parse HTML and Create Pull Request
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
           import requests
           from bs4 import BeautifulSoup
 
-          url = "https://docs.qq.com/doc/DTnJiakR6YXR5YXZp"
+          url = "https://docs.qq.com/doc/DVWlwUWtWZmJkRm5u"
           response = requests.get(url)
           soup = BeautifulSoup(response.text, "html.parser")
 
@@ -43,13 +43,25 @@ jobs:
               f.write(f"Content: {content}\n")
           '
 
-      - name: Commit and push parsed content
-        env:
-            MY_PAT: ${{ secrets.TEST }}
+      - name: Create new branch
         run: |
-            git config --global user.name 'github-actions[bot]'
-            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-            git remote set-url origin https://x-access-token:${MY_PAT}@github.com/Hgnim/Test.git
-            git add parsed_content.txt
-            git commit -m "Save parsed content" || echo "No changes to commit"
-            git push
+          git checkout -b new-branch
+
+      - name: Make changes and commit
+        run: |
+          git add parsed_content.txt
+          git commit -m "Save parsed content" || echo "No changes to commit"
+
+      - name: Push changes to remote repository
+        run: |
+          git push origin new-branch
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Save parsed content
+          branch: new-branch
+          base: main
+          title: Save parsed content
+          body: This pull request is created by GitHub Actions to save the parsed content.
