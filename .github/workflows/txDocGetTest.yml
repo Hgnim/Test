@@ -1,0 +1,47 @@
+name: Parse and Save HTML
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  parse-and-save:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Parse HTML and save content
+        run: |
+          import requests
+          from bs4 import BeautifulSoup
+
+          url = "https://docs.qq.com/doc/DTnJiakR6YXR5YXZp"
+          response = requests.get(url)
+          soup = BeautifulSoup(response.text, 'html.parser')
+
+          title = soup.find('title').text.strip()
+          content = soup.find('div', {'class': 'doc-content'}).text.strip()
+
+          with open('parsed_content.txt', 'w') as f:
+            f.write(f"Title: {title}\n")
+            f.write(f"Content: {content}\n")
+
+      - name: Commit and push parsed content
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add parsed_content.txt
+          git commit -m "Save parsed content" || echo "No changes to commit"
+          git push
