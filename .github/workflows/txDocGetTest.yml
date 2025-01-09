@@ -28,7 +28,7 @@ jobs:
           import requests
           from bs4 import BeautifulSoup
 
-          url = "https://docs.qq.com/doc/DVWlwUWtWZmJkRm5u"
+          url = "https://docs.qq.com/doc/DTnJiakR6YXR5YXZp"
           response = requests.get(url)
           soup = BeautifulSoup(response.text, "html.parser")
 
