@@ -28,7 +28,7 @@ jobs:
           import requests
           from bs4 import BeautifulSoup
 
-          url = "https://docs.qq.com/doc/DTnJiakR6YXR5YXZp"
+          url = "https://docs.qq.com/doc/DVWlwUWtWZmJkRm5u"
           response = requests.get(url)
           soup = BeautifulSoup(response.text, "html.parser")
 
@@ -59,7 +59,7 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Save parsed content
           branch: new-branch
           base: main
