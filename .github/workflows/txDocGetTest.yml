@@ -45,7 +45,7 @@ jobs:
 
       - name: Commit and push parsed content
         env:
-            MY_PAT: ${{ secrets.test }}
+            MY_PAT: ${{ secrets.TEST }}
         run: |
             git config --global user.name 'github-actions[bot]'
             git config --global user.email 'github-actions[bot]@users.noreply.github.com'
