@@ -1,4 +1,4 @@
-name: Parse HTML and Create Pull Request
+name: Parse HTML with Selenium
 
 on:
   push:
@@ -20,28 +20,50 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests beautifulsoup4
+          pip install selenium beautifulsoup4
+          python -m webdriver_manager.chrome
 
       - name: Parse HTML and save content
         run: |
-          python -c '
-          import requests
+          from selenium import webdriver
+          from selenium.webdriver.common.by import By
+          from selenium.webdriver.chrome.service import Service
+          from webdriver_manager.chrome import ChromeDriverManager
           from bs4 import BeautifulSoup
+          import time
 
           url = "https://docs.qq.com/doc/DTnJiakR6YXR5YXZp"
-          response = requests.get(url)
-          soup = BeautifulSoup(response.text, "html.parser")
 
+          # 设置ChromeDriver
+          service = Service(ChromeDriverManager().install())
+          driver = webdriver.Chrome(service=service)
+
+          # 打开网页
+          driver.get(url)
+
+          # 等待页面加载
+          time.sleep(5)  # 等待5秒，确保页面完全加载
+
+          # 获取页面源码
+          html = driver.page_source
+
+          # 解析HTML
+          soup = BeautifulSoup(html, "html.parser")
+
+          # 检查标题
           title_element = soup.find("title")
-          content_element = soup.find("div", {"class": "doc-content"})
-
           title = title_element.text.strip() if title_element else "Title not found"
+
+          # 检查内容
+          content_element = soup.find("div", {"class": "doc-content"})
           content = content_element.text.strip() if content_element else "Content not found"
 
           with open("parsed_content.txt", "w") as f:
               f.write(f"Title: {title}\n")
               f.write(f"Content: {content}\n")
-          '
+
+          # 关闭浏览器
+          driver.quit()
 
       - name: Create new branch
         run: |
