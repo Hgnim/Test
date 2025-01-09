@@ -32,8 +32,11 @@ jobs:
           response = requests.get(url)
           soup = BeautifulSoup(response.text, "html.parser")
 
-          title = soup.find("title").text.strip()
-          content = soup.find("div", {"class": "doc-content"}).text.strip()
+          title_element = soup.find("title")
+          content_element = soup.find("div", {"class": "doc-content"})
+
+          title = title_element.text.strip() if title_element else "Title not found"
+          content = content_element.text.strip() if content_element else "Content not found"
 
           with open("parsed_content.txt", "w") as f:
               f.write(f"Title: {title}\n")
