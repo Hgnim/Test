@@ -24,19 +24,21 @@ jobs:
 
       - name: Parse HTML and save content
         run: |
+          python -c '
           import requests
           from bs4 import BeautifulSoup
 
           url = "https://docs.qq.com/doc/DTnJiakR6YXR5YXZp"
           response = requests.get(url)
-          soup = BeautifulSoup(response.text, 'html.parser')
+          soup = BeautifulSoup(response.text, "html.parser")
 
-          title = soup.find('title').text.strip()
-          content = soup.find('div', {'class': 'doc-content'}).text.strip()
+          title = soup.find("title").text.strip()
+          content = soup.find("div", {"class": "doc-content"}).text.strip()
 
-          with open('parsed_content.txt', 'w') as f:
-            f.write(f"Title: {title}\n")
-            f.write(f"Content: {content}\n")
+          with open("parsed_content.txt", "w") as f:
+              f.write(f"Title: {title}\n")
+              f.write(f"Content: {content}\n")
+          '
 
       - name: Commit and push parsed content
         run: |
