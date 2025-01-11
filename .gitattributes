@@ -1,4 +1,6 @@
 # https://github.com/github-linguist/linguist/blob/main/lib/linguist/languages.yml
 
-*.txt linguist-language=text
-*.md linguist-language=markdown
+#*.txt linguist-language=text
+#*.md linguist-language=markdown
+*.md linguist-detectable=true
+*.txt linguist-detectable=true
